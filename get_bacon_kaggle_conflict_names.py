@@ -201,6 +201,6 @@ check_name_exists_on_bacon(nominees_int_df, problem_names_path)
 # corrected_names_path was created by adding another column to check.csv
 # with names checked for spelling on oracle of bacon
 # Fix dataset by placing in correct nominee names
-#nominees_df = fix_problem_names(nominees_df,
-#                                load_dataset(corrected_names_path),
-#                                corrected_dataset_path)
+#fix_problem_names(nominees_df,
+#                  load_dataset(corrected_names_path),
+#                  corrected_dataset_path)
