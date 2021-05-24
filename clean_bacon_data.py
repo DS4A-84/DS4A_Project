@@ -7,16 +7,23 @@
 
 # Import Python Modules
 from functools import reduce
-from get_bacon_kaggle_conflict_names.py import categories_interest
+
 
 
 
 # Data
 bacon_data_path = 'data/bacon.txt'
-kaggle_data_path = 'data/the_oscar_award_corrected.csv'
-categories_interest
-print(categories_interest)
-exit()
+corrected_kaggle_data_path = 'data/the_oscar_award_corrected.csv'
+categories_interest = ['ACTOR',
+                       'ACTRESS',
+                       'ACTOR IN A LEADING ROLE',
+                       'ACTRESS IN A LEADING ROLE',
+                       'ACTOR IN A SUPPORTING ROLE',
+                       'ACTRESS IN A SUPPORTING ROLE',
+                       'DIRECTING',
+                       'DIRECTING (Comedy Picture)',
+                       'DIRECTING (Dramatic Picture)']
+
 
 def load_txt_data(filepath):
     '''
@@ -77,5 +84,4 @@ def write_clean_blob_to_txt(lines,filepath):
 
 raw_bacon_data = load_txt_data(bacon_data_path)
 clean_bacon_data = write_clean_blob_to_txt(raw_bacon_data,output_path)
-print(len(clean_bacon_data))
-print(clean_bacon_data[40][1])
+corrected_kaggle_data = load_csv_data(corrected_kaggle_data_path)
