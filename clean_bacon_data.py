@@ -5,15 +5,15 @@
 # Clean Oracle of Bacon Json Blob data
 
 
-
 # Import Python Modules
 from functools import reduce
+
+
 
 
 # Data
 bacon_data_path = 'data/bacon.txt'
 kaggle_data_path = 'data/the_oscar_award_corrected.csv'
-
 
 
 
