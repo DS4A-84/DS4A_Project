@@ -30,6 +30,7 @@ def load_txt_data(filepath):
     a = open(filepath, 'r', encoding="utf8")
     return a.readlines()
 
+
 def load_csv_data(filepath):
     '''
     Inputs: filepath - str path to input data

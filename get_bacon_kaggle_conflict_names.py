@@ -139,11 +139,16 @@ def fix_problem_names(df1,df2,filepath):
     Returns: nothing
     '''
 
-    two_ppl = ["Joel Coen and Ethan Coen",
-                "Robert Wise, Jerome Robbins",
-                "Warren Beatty, Buck Henry"
-                ]
+    # replacement dict
+    dict = df2.set_index('problem_names')['name'].to_dict()
 
+    # replace problem names using replacement dict
+    df1['name'] = df1['name'].replace(dict)
+
+    # output fixed of original dataframe with fixed nominee names
+    write_to_csv(df1,filepath)
+
+    '''
     # fix names depending on more than one person or not
     for i in range(0,len(df2)):
         #print(df1[df1['name']==df2['name'][i]])
@@ -156,9 +161,7 @@ def fix_problem_names(df1,df2,filepath):
             df1 = df1.append(a, ignore_index=True)
         else:
             df1['name'] = df1['name'].replace(pn,df2['name'][i])
-
-    # output fixed of original dataframe with fixed nominee names
-    write_to_csv(df1,filepath)
+    '''
 
 
 def write_to_csv(df,filepath):
@@ -190,7 +193,6 @@ def load_dataset(filepath):
 
 # load dataset
 nominees_df = load_dataset(dataset_file_path)
-nominees_df = nominees_df.head(5)
 
 # Drop any category not in categories_interest
 nominees_int_df = nominees_df[nominees_df['category'].isin(categories_interest)]
@@ -201,6 +203,5 @@ check_name_exists_on_bacon(nominees_int_df, problem_names_path)
 # corrected_names_path was created by adding another column to check.csv
 # with names checked for spelling on oracle of bacon
 # Fix dataset by placing in correct nominee names
-#fix_problem_names(nominees_df,
-#                  load_dataset(corrected_names_path),
-#                  corrected_dataset_path)
+#fix_problem_names(nominees_df, load_dataset(corrected_names_path),
+#                    corrected_dataset_path)
