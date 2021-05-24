@@ -12,6 +12,7 @@ from functools import reduce
 
 # Data
 bacon_data_path = 'data/bacon.txt'
+kaggle_data_path = 'data/the_oscar_award_corrected.csv'
 
 
 
@@ -24,6 +25,18 @@ def load_txt_data(filepath):
 
     returns: output data is a readlines object
              of the text file
+    '''
+
+    a = open(filepath, 'r', encoding="utf8")
+    return a.readlines()
+
+def load_csv_data(filepath):
+    '''
+    Inputs: filepath - str path to input data
+
+    input data is in a csv file
+
+    returns: pandas dataframe of file contents
     '''
 
     a = open(filepath, 'r', encoding="utf8")
@@ -57,7 +70,6 @@ def write_clean_blob_to_txt(lines,filepath):
             result.append(i)
 
     return result
-
 
 
 
