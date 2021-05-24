@@ -10,9 +10,9 @@
 from functools import reduce
 
 
-# Assign path variables for input, output
+# Data
 bacon_data_path = 'data/bacon.txt'
-output_path = 'data/clean_bacon_dicts.txt'
+
 
 
 
@@ -51,14 +51,10 @@ def write_clean_blob_to_txt(lines,filepath):
 
 
     result = []
-    temp = []
     for i in lines:
         if '{"title' in i :
             i = reduce(lambda x, y: x.replace(y, dict[y]), dict, i)
-            temp.append(i)
-        if len(temp) == 2:
-            result.append(temp)
-            temp = []
+            result.append(i)
 
     return result
 
