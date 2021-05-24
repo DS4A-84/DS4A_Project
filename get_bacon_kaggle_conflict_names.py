@@ -208,7 +208,7 @@ nominees_df = load_dataset(dataset_file_path)
 nominees_int_df = nominees_df[nominees_df['category'].isin(categories_interest)]
 
 ## Check names exist in Oracle of bacon, output will be a csv
-check_name_exists_on_bacon(nominees_int_df, problem_names_path)
+#check_name_exists_on_bacon(nominees_int_df, problem_names_path)
 
 # corrected_names_path was created by adding another column to check.csv
 # with names checked for spelling on oracle of bacon

@@ -7,15 +7,16 @@
 
 # Import Python Modules
 from functools import reduce
-
+from get_bacon_kaggle_conflict_names.py import categories_interest
 
 
 
 # Data
 bacon_data_path = 'data/bacon.txt'
 kaggle_data_path = 'data/the_oscar_award_corrected.csv'
-
-
+categories_interest
+print(categories_interest)
+exit()
 
 def load_txt_data(filepath):
     '''
