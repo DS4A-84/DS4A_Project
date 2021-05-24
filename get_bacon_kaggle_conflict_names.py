@@ -1,3 +1,10 @@
+#!/usr/bin/python
+
+# DS4A Project
+# Group 84
+# Checks for nominees of interest in bacon website and replaces kaggle dataset names with those in bacon
+
+
 import itertools as itr
 import numpy as np
 from os import path
@@ -6,6 +13,9 @@ import random
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import time
+
+
+
 
 # Global Vars
 
