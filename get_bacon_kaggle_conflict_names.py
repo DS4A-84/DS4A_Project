@@ -158,21 +158,6 @@ def fix_problem_names(df1,df2,filepath):
     # output fixed of original dataframe with fixed nominee names
     write_to_csv(df1,filepath)
 
-    '''
-    # fix names depending on more than one person or not
-    for i in range(0,len(df2)):
-        #print(df1[df1['name']==df2['name'][i]])
-        pn = df2['problem_names'][i]
-        if pn in two_ppl:
-            a = df1.loc[df1["name"] == pn,df1.columns]
-            n1,n2 = pn.replace(" and ",", ").split(", ")
-            a['name'] = a['name'].replace(pn,n1)
-            df1['name'] = df1['name'].replace(pn,n2)
-            df1 = df1.append(a, ignore_index=True)
-        else:
-            df1['name'] = df1['name'].replace(pn,df2['name'][i])
-    '''
-
 
 def write_to_csv(df,filepath):
     '''
