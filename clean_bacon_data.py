@@ -5,15 +5,21 @@
 # Clean Oracle of Bacon Json Blob data
 
 
+
 # Import Python Modules
 from functools import reduce
-import pandas as pd
 import json
+from os import path
+import pandas as pd
+
+
 
 
 # Data
 bacon_data_path = 'data/bacon.txt'
-corrected_kaggle_data_path = 'data/the_oscar_award_corrected.csv'
+clean_bacon_df_path = 'data/clean_bacon_df.csv'
+kaggle_data_path = 'data/the_oscar_award_corrected.csv'
+
 categories_interest = ['ACTOR',
                        'ACTRESS',
                        'ACTOR IN A LEADING ROLE',
@@ -39,15 +45,7 @@ def load_txt_data(filepath):
     return a.readlines()
 
 
-def load_csv_data(filepath):
-    '''
-    Inputs: filepath - str path to input data
-
-    input data is in a csv file
-
-    returns: pandas dataframe of file contents
-    '''
-
+def load_dataset(filepath):
     df = pd.read_csv(filepath)
     return df
 
@@ -76,13 +74,14 @@ def blob_to_list(lines):
         if 'INFOBOX' in i or '{"title' in i :
 
             #check for directors, year in line
-            if 'directors' in i and 'year' in i:
+            if 'directors' in i and 'year' in i[-20:]:
                 # clean the line
                 i = reduce(lambda x, y: x.replace(y, dict[y]), dict, i)
                 i = json.loads(i)
                 result.append(i)
 
     return result
+
 
 def create_info_title_pair_list(list):
     '''
@@ -92,7 +91,7 @@ def create_info_title_pair_list(list):
     infobox and title adds sequential
     pairs to output list
 
-    returns: a list of correctly sequential
+    returns: a nested list of correctly sequential
     movie info/title movie dictionaies
     '''
 
@@ -116,11 +115,58 @@ def create_info_title_pair_list(list):
             temp = []
     return result
 
-def create_node_info(list):
 
-    #break down list
+def create_node_info(list, k_names):
+    '''
+    Inputs: nested list of sequential info/title
+
+    this takes the info/title nested list and converts
+    to pandas dataframe
+    writes outpandas dataframe with 4 columns with each row
+    being a name and info on the film they participated
+
+    returns: nothing
+    '''
+
+    df = pd.DataFrame({'title':[],'year':[],'role':[],'name':[]})
+
+
+    #break down name values to dataframe
+    #what if cast is empty
     for film in list:
+        t_df=""
         i,t = film
+        try:
+            t['year']
+        except KeyError:
+            print(t)
+        if 'cast' in t.keys():
+            cast_dir = t['cast']+t['directors']
+        else:
+            cast_dir = t['directors']
+        t_df = pd.DataFrame({'title':[t['title']]*len(cast_dir),
+                             'year':[t['year']]*len(cast_dir),
+                             'role':['cast']*len(cast_dir),
+                             'name':cast_dir
+        })
+
+        # fill in director
+        t_df.loc[t_df['name'].isin(i['directors']),'role'] = "director"
+
+        # fill in star if it exists
+        if 'stars' in i.keys():
+            t_df.loc[t_df['name'].isin(i['stars']),'role'] = "star"
+
+        # check if names in kaggle data exist in this dataframe
+        print(t_df['name'])
+        print(type(t_df['name']))
+        if t_df['name'] in t_df['name']:
+            print("names found")
+            exit()
+        exit()
+
+            #df.append(t_df)
+    return df
 
 def write_to_csv(df,filepath):
     '''
@@ -139,16 +185,16 @@ def write_to_csv(df,filepath):
 
 # load bacon and kaggle datasets
 raw_bacon_data = load_txt_data(bacon_data_path)
-kaggle_data = load_csv_data(corrected_kaggle_data_path)
-
-
-# Drop any category not in categories_interest in kaggle dataset
+kaggle_data = load_dataset(kaggle_data_path)
 kaggle_data = kaggle_data[kaggle_data['category'].isin(categories_interest)]
+kaggle_names = kaggle_data['name'].drop_duplicates()
 
 # clean list of info/title string dictionaies
 clean_bacon_data = blob_to_list(raw_bacon_data)
-
+#print(len(clean_bacon_data))
+#256992
 # convert from list to pandas df
 bacon_pair_list = create_info_title_pair_list(clean_bacon_data)
-print(len(bacon_pair_list))
-print(len(clean_bacon_data))
+#print(len(bacon_pair_list))
+#123409
+create_node_info(bacon_pair_list, kaggle_names)
