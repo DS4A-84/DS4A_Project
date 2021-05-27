@@ -52,7 +52,7 @@ def load_csv_data(filepath):
     return df
 
 
-def write_clean_blob_to_txt(lines):
+def blob_to_list(lines):
     '''
     Input: lines - readlines object
            filepath - str of output path
@@ -60,7 +60,7 @@ def write_clean_blob_to_txt(lines):
     Takes lines input and formats it to a python dictionary
     only keeps lines that are json blobs
 
-    returns:  nested list of dictionaries, a  list is one movie
+    returns:  list of dictionaries formatted strings
     '''
 
     dict = {
@@ -71,116 +71,84 @@ def write_clean_blob_to_txt(lines):
         "\n":""
         }
 
-    temp = []
     result = []
-    label = ""
     for i in lines:
         if 'INFOBOX' in i or '{"title' in i :
-            temp_label = ""
-            if 'INFOBOX' in i[0:10]:
-                temp_label = "INFOBOX"
-            else:
-                temp_label = "title"
 
-            #check for directors in
-            if 'directors' not in i:
-                temp = []
-                continue
+            #check for directors, year in line
+            if 'directors' in i and 'year' in i:
+                # clean the line
+                i = reduce(lambda x, y: x.replace(y, dict[y]), dict, i)
+                i = json.loads(i)
+                result.append(i)
 
-            # check if year of film exists
-            if 'year' not in i:
-                temp = []
-                continue
-
-
-            # clean the line
-            i = reduce(lambda x, y: x.replace(y, dict[y]), dict, i)
-
-            # check if label is the same as previous
-            if label == temp_label:
-                # if label is INFOBOX
-                # then you throw away previous info and create new temp with
-                # current info
-
-                # if label is title skip
-
-
-                temp = []
-                temp.append(i)
-                continue
-
-            # check for title after info
-
-            # convert to dictionary
-            i = json.loads(i)
-            temp.append(i)
-            label = temp_label
-            if len(temp) == 2:
-                result.append(temp)
-                temp = []
-
-    if "title" in result[0]:
-        print(result)
     return result
 
-def convert_clean_blob_to_pandas_df(list):
+def create_info_title_pair_list(list):
     '''
-    inputs - nested list of pairs of dictionaries
+    inputs -  list of strings in dictionary format
 
-    takes in nested list dictionaies infobox and title
-    converts both dictionaries per film to one pandas DataFrame
+    takes in  list
+    infobox and title adds sequential
+    pairs to output list
 
-    returns: a large pandas dataframe of all the film dataframes
-             vertically stacked
+    returns: a list of correctly sequential
+    movie info/title movie dictionaies
     '''
 
-    df = pd.DataFrame({"title":[],"year":[],"role":[],"name":[]})
+    result = []
+    temp = []
 
-    temp = ""
+    for f in list:
+
+        if len(temp) == 0:
+            # check if input is infobox
+            if "directors" in next(iter(f)):
+                temp.append(f)
+
+        elif len(temp) == 1:
+            #check if input is title
+            if "title" in next(iter(f)):
+                # check if directors match
+                if temp[0]['directors'] == f['directors']:
+                    temp.append(f)
+                    result.append(temp)
+            temp = []
+    return result
+
+def create_node_info(list):
+
+    #break down list
     for film in list:
-        i, t = film
+        i,t = film
 
-        try:
-            t['cast']
-        except KeyError:
-            print(temp)
-            print(film)
+def write_to_csv(df,filepath):
+    '''
+    input: a pandas DataFrame
 
-        temp = film
-        #if cast field is empty, skip
-        if t['cast']:
-            cast_df = pd.DataFrame({'title':[t['title']]*len(t['cast']),
-                                    'year':[t['year']]*len(t['cast']),
-                                    'role':["cast"]*len(t['cast']),
-                                    'name':t['cast']
-                                    })
-            # fill in star info if any
-            if 'stars' in i:
-                for a in i['stars']:
-                    cast_df.loc[cast_df['name'] == a,'role'] = "star"
+    writes to a csv file
+    in same diretory as this script
 
-            df.append(cast_df, ignore_index=True)
-
-        #add director dataframe
-        director_df = pd.DataFrame({'title':[t['title']]*len(t['directors']),
-                                'year':[t['year']]*len(t['directors']),
-                                'role':["director"]*len(t['directors']),
-                                'name':t['directors']
-                                })
-
-        df.append(director_df, ignore_index=True)
-
-    return df
-
+    returns: nothing
+    '''
+    # if no csv exists
+    if not path.exists(filepath):
+        df.to_csv(filepath,index=False)
+    else:
+        df.to_csv(filepath, mode='a', header=False,index=False)
 
 # load bacon and kaggle datasets
 raw_bacon_data = load_txt_data(bacon_data_path)
 kaggle_data = load_csv_data(corrected_kaggle_data_path)
 
+
 # Drop any category not in categories_interest in kaggle dataset
 kaggle_data = kaggle_data[kaggle_data['category'].isin(categories_interest)]
-clean_bacon_data = write_clean_blob_to_txt(raw_bacon_data)
 
+# clean list of info/title string dictionaies
+clean_bacon_data = blob_to_list(raw_bacon_data)
 
 # convert from list to pandas df
-bacon_df = convert_clean_blob_to_pandas_df(clean_bacon_data)
+bacon_pair_list = create_info_title_pair_list(clean_bacon_data)
+print(len(bacon_pair_list))
+print(len(clean_bacon_data))
