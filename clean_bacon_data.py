@@ -116,7 +116,7 @@ def create_info_title_pair_list(list):
     return result
 
 
-def create_node_info(list, k_names):
+def create_node_info(list, k_names, filepath):
     '''
     Inputs: nested list of sequential info/title
 
@@ -128,18 +128,14 @@ def create_node_info(list, k_names):
     returns: nothing
     '''
 
-    df = pd.DataFrame({'title':[],'year':[],'role':[],'name':[]})
-
+    #df = pd.DataFrame({'title':[],'year':[],'role':[],'name':[]})
 
     #break down name values to dataframe
     #what if cast is empty
     for film in list:
         t_df=""
         i,t = film
-        try:
-            t['year']
-        except KeyError:
-            print(t)
+
         if 'cast' in t.keys():
             cast_dir = t['cast']+t['directors']
         else:
@@ -157,16 +153,19 @@ def create_node_info(list, k_names):
         if 'stars' in i.keys():
             t_df.loc[t_df['name'].isin(i['stars']),'role'] = "star"
 
-        # check if names in kaggle data exist in this dataframe
-        print(t_df['name'])
-        print(type(t_df['name']))
-        if t_df['name'] in t_df['name']:
-            print("names found")
-            exit()
-        exit()
 
-            #df.append(t_df)
-    return df
+        t_df = t_df[t_df['name'].isin(kaggle_names)]
+        if len(t_df)!=0:
+            write_to_csv(t_df,filepath)
+
+        # check if names in kaggle data exist in this dataframe
+        #temp=[]
+        #for i in t_df['name']:
+        #    if len(k_names[k_names==i])!=0:
+        #        temp.append(i)
+        #        if len(temp) == 2:
+        #            write_to_csv(t_df,filepath)
+        #            break
 
 def write_to_csv(df,filepath):
     '''
@@ -189,6 +188,7 @@ kaggle_data = load_dataset(kaggle_data_path)
 kaggle_data = kaggle_data[kaggle_data['category'].isin(categories_interest)]
 kaggle_names = kaggle_data['name'].drop_duplicates()
 
+
 # clean list of info/title string dictionaies
 clean_bacon_data = blob_to_list(raw_bacon_data)
 #print(len(clean_bacon_data))
@@ -197,4 +197,4 @@ clean_bacon_data = blob_to_list(raw_bacon_data)
 bacon_pair_list = create_info_title_pair_list(clean_bacon_data)
 #print(len(bacon_pair_list))
 #123409
-create_node_info(bacon_pair_list, kaggle_names)
+create_node_info(bacon_pair_list, kaggle_names,clean_bacon_df_path)
