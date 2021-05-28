@@ -39,10 +39,12 @@ print(a.head())
 edges = pd.DataFrame({'source':[], 'target':[]})
 films = clean_bacon_df['title'].unique()
 
-for i in films:
-    a = clean_bacon_df[clean_bacon_df['title'] == i]
-    print(a)
-    exit()
+for f in films:
+    f = clean_bacon_df[clean_bacon_df['title'] == i]
+    for n in f['name']:
+        x=1
+
+
 
 
 
@@ -50,3 +52,15 @@ for i in films:
 # to get nodes
 #per person condence film info into nested dictionary with each dictionary having
 #the nominees film info
+
+
+
+'''
+    index = 0
+    index_end = len(df)
+    for i in range(index,index_end):
+        for j in range(i+1,index_end):
+            pairs = [[df['name'][i],df['name'][j]]]
+            pairs = pd.DataFrame(pairs, columns = ['nomeinee1','nominee2'])
+            write_to_csv(pairs, filepath)
+'''
