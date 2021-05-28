@@ -2,7 +2,7 @@
 
 # DS4A Project
 # Group 84
-# Clean Oracle of Bacon Json Blob data
+# Clean Oracle of Bacon Json Blob data to convert to dataframe
 
 
 
@@ -208,3 +208,6 @@ bacon_pair_list = create_info_title_pair_list(clean_bacon_data)
 # create pandas dataframe of movie info for nominees
 seq_list_to_nominees_df(bacon_pair_list, kaggle_names,clean_bacon_df_path)
 #45964
+
+#Joel Coen is missing for no country for old men
+# check get_bacon_conflict_names.py
