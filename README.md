@@ -11,6 +11,7 @@ This will take the raw the_oscar_award.csv from https://www.kaggle.com/unanimad/
 This will take the bacon dataset from https://oracleofbacon.org/data.txt.bz2
 and the new "the_oscar_award_corrected.csv" output from the previous step and 
 spits out a dataframe of every movie the nominee has been in (according to the bacon dataset)
+
 '''
 title	year	role	name
 The Birth of a Nation	1915	star	Lillian Gish
@@ -24,6 +25,7 @@ Blade Runner	1982	director	Ridley Scott
 3. run create_node_edges_nominees.py (might need to reformat nodes output and possibly reformat it, needs work)
 This will take in the output from step 3 and 
 and create two csvs one for edges and one for nodes
+
 bacon_edges.csv
 '''
                source              target
