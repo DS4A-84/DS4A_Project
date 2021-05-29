@@ -2,6 +2,8 @@
 DS4A Capstone Project
 
 
+NOTE: this only looks at actor/actress/support (actors/actress)/director nominees. This is a small portion of the kaggle nominee dataset from kaggle.
+
 #scripts running steps
 
 1. run get_bacon_kaggle_conflict_names.py
